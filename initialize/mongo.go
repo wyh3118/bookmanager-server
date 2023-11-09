@@ -11,7 +11,7 @@ import (
 
 func MongoInit() {
 	if global.MongoClient == nil {
-		global.MongoClient = getMongoClient("mongodb://admin:123456@43.138.56.2:27017/")
+		global.MongoClient = getMongoClient("mongodb://admin:123456@43.138.56.2")
 	}
 
 	BookManager := global.MongoClient.Database("BookManager")
