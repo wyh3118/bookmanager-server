@@ -25,7 +25,7 @@ func MongoInit() {
 
 func getMongoClient(url string) *mongo.Client {
 	// 设置客户端连接配置
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI(url)
 
 	// 连接到MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)

@@ -5,8 +5,11 @@ FROM golang:1.21-alpine
 MAINTAINER "wyh"
 
 # 配置模块代理
-ENV GO111MODULE=on
-ENV GOPROXY=https://goproxy.cn,direct
+ENV GO111MODULE=on \
+    GOPROXY=https://goproxy.cn,direct \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
 
 #工作目录
 WORKDIR /opt
