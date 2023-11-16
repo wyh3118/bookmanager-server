@@ -12,7 +12,8 @@ func GetEngine() *gin.Engine {
 	engine.Use(middleware.Cors())
 	getUserRouter(engine)
 	// 使用用户认证中间件
-	engine.Use(middleware.AuthMiddleware(), middleware.ApiAuth())
+	//engine.Use(middleware.AuthMiddleware(), middleware.ApiAuth())
+	engine.Use(middleware.AuthMiddleware())
 	getApiRouter(engine)
 	getRoleRouter(engine)
 	getBookRouter(engine)

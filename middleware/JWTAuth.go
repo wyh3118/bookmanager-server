@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"bookmanager-server/global"
+	"context"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -34,7 +36,10 @@ func CreateToken(Id primitive.ObjectID) (tokenString string, err error) {
 	// 使用指定的签名方法创建签名对象
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// 使用指定的secret签名并获得完整的编码后的字符串token
-	return token.SignedString(userSecret)
+	tokenString, err = token.SignedString(userSecret)
+	// 将tokenString存入redis
+	global.Redis.Set(context.TODO(), "user:"+Id.Hex(), tokenString, 0)
+	return tokenString, err
 }
 
 func parseToken(tokenString string) (*userClaims, error) {
@@ -74,11 +79,21 @@ func AuthMiddleware() func(c *gin.Context) {
 			c.Abort()
 			return
 		}
+		tokenString := parts[1]
 		// parts[1]是获取到的tokenString，我们使用之前定义好的解析JWT的函数来解析它
-		uc, err := parseToken(parts[1])
+		uc, err := parseToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"message": "无效的Token",
+			})
+			c.Abort()
+			return
+		}
+		//判断tokenString是否与redis中的相同以保证只能有一个设备登录
+		redisToken := global.Redis.Get(context.TODO(), "user:"+uc.Id.Hex()).Val()
+		if redisToken != tokenString {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"message": "账号已在其它地方登录，请重新登录",
 			})
 			c.Abort()
 			return
