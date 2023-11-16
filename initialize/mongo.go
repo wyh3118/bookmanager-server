@@ -4,6 +4,7 @@ import (
 	"bookmanager-server/global"
 	"context"
 	"fmt"
+	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -11,7 +12,12 @@ import (
 
 func MongoInit() {
 	if global.MongoClient == nil {
-		global.MongoClient = getMongoClient("mongodb://admin:123456@43.138.56.2")
+		host := viper.GetString("mongo.host")
+		port := viper.GetString("mongo.port")
+		username := viper.GetString("mongo.username")
+		password := viper.GetString("mongo.password")
+		url := fmt.Sprintf("mongodb://%s:%s@%s:%s/", username, password, host, port)
+		global.MongoClient = getMongoClient(url)
 	}
 
 	BookManager := global.MongoClient.Database("BookManager")

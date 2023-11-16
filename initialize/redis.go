@@ -5,16 +5,17 @@ import (
 	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
+	"github.com/spf13/viper"
 	"log"
 )
 
 func RedisInit() {
 	global.Redis = redis.NewClient(&redis.Options{
-		Addr:     "43.138.73.97:6379", // 数据库地址
-		Username: "default",
-		Password: "redis654321",
-		DB:       0,
-		PoolSize: 20,
+		Addr:     fmt.Sprintf("%s:%s", viper.GetString("redis.host"), viper.GetString("redis.port")), // 数据库地址
+		Username: viper.GetString("redis.username"),
+		Password: viper.GetString("redis.password"),
+		DB:       viper.GetInt("redis.db"),
+		PoolSize: viper.GetInt("redis.poolsize"),
 	})
 
 	_, err := global.Redis.Ping(context.TODO()).Result()

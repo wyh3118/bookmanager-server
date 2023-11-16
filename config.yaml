@@ -1,0 +1,13 @@
+mongo:
+  host: 127.0.0.1
+  port: 27017
+  username: admin
+  password: 123456
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  username: default
+  password: redis654321
+  db: 0
+  poolsize: 20
